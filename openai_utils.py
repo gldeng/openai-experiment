@@ -20,8 +20,7 @@ def run_dalle(prompt):
       n=1,
     )
 
-    image_url = response.data[0].url
-    return image_url, response.data[0].revised_prompt
+    return response.dict()
 
 
 def run_vision(base64_image):
@@ -45,7 +44,7 @@ def run_vision(base64_image):
       ],
       max_tokens=300,
     )
-    return response.choices[0].message.content, response.id
+    return response.dict()
 
 
 def craft_prompt(desc, variation):
@@ -53,7 +52,7 @@ def craft_prompt(desc, variation):
     content = [
         'I have an image described as follows.',
         f'"{desc}"',
-        'I want to create a variation of the pixel art image of 128x128 pixel grid.',
+        'I want to create a variation of the pixel art image of 64x64 pixel grid.',
         'And try to maintain the original image as much as possible.',
         "Don't change the posture of the character.",
         variation,
@@ -67,7 +66,7 @@ def craft_prompt(desc, variation):
         max_tokens=2000
     )
     prompt = response_prompt.choices[0].text.encode('utf8').decode('unicode_escape').strip()
-    return prompt, response_prompt.id
+    return response_prompt.dict()
 
 
 # def craft_base_prompt():
@@ -96,16 +95,16 @@ def download_image(image_url):
 
 def create_variation(base64_image, variation):
     import base64
-    description, vision_session_id = run_vision(base64_image)
-    prompt, craft_prompt_session_id = craft_prompt(description, variation)
-    url, dalle_revised_prompt = run_dalle(prompt)
+    vision_result = run_vision(base64_image)
+    description = vision_result['choices'][0]['message']['content']
+    craft_prompt_result= craft_prompt(description, variation)
+    prompt = craft_prompt_result['choices'][0]['text'].strip()
+    dalle_result = run_dalle(prompt)
+    url = dalle_result['data'][0]['url']
     image_bin = download_image(url)
     return {
-        'description': description,
-        'visionSessionId': vision_session_id,
-        'newPrompt': prompt,
-        'craftPromptSessionId': craft_prompt_session_id,
-        'dalleRevisedPrompt': dalle_revised_prompt,
-        'url': url,
+        'vision': vision_result,
+        'craft_prompt': craft_prompt_result,
+        'dalle': dalle_result,
         'image': base64.b64encode(image_bin).decode('utf8')
     }
