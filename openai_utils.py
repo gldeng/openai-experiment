@@ -35,7 +35,7 @@ def run_vision(base64_image):
             {
               "type": "image_url",
               "image_url": {
-                  "url": f"data:image/webp;base64,{base64_image}",
+                  "url": f"data:image/png;base64,{base64_image}",
                   "detail": "low"
               },
             },
@@ -106,7 +106,8 @@ def create_variation(base64_image, variation):
         'vision': vision_result,
         'craft_prompt': craft_prompt_result,
         'dalle': dalle_result,
-        'image': base64.b64encode(image_bin).decode('utf8')
+        'image': base64.b64encode(image_bin).decode('utf8'),
+        'image512': base64.b64encode(reduce_size(image_bin, 2)).decode('utf8'),
     }
 
 
