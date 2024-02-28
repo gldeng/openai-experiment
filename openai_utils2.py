@@ -45,6 +45,19 @@ def download_image(image_url):
     return requests.get(image_url).content
 
 
+def create_variation_dalle(name, prompt, no_rewrite=False):
+    import base64
+    dalle_result = run_dalle(prompt, no_rewrite)
+    url = dalle_result['data'][0]['url']
+    image_bin = download_image(url)
+    return {
+        'name': name,
+        'dalle': dalle_result,
+        'image': base64.b64encode(image_bin).decode('utf8'),
+        'image256': base64.b64encode(reduce_size(image_bin, 4)).decode('utf8'),
+    }
+
+
 def create_variation(name, desc, no_rewrite=False):
     import base64
     craft_prompt_result= craft_prompt(desc)
