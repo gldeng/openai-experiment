@@ -7,8 +7,8 @@ def _concat(items):
     return ', '.join(items)
 
 
-def generate_prompt(trait_args):
-    prompt = BASE_PROMPT
+def generate_prompt(base_prompt, trait_args):
+    prompt = base_prompt
     category_is = []
     category_with = []
     category_pet = []
