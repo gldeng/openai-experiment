@@ -5,6 +5,7 @@ from .mongo import get_collection, create_collection_if_not_exists
 from .prompt import ensure_as_is, generate_prompt
 from .generation import run_one_sample
 from .constants import BASE_PROMPT
+from .reorg import run_reorg
 
 
 @click.group()
@@ -16,11 +17,17 @@ def cli():
 @click.option('--base-prompt', default=BASE_PROMPT, help='The base prompt.')
 @click.argument('filename')
 def sample(filename, db_name, base_prompt):
+    def _make_prompt(base_prompt, trait_args):
+        prompt = generate_prompt(base_prompt, trait_args)
+        prompt = run_reorg(prompt)
+        prompt = ensure_as_is(prompt)
+        return prompt
+
     import json
     with open(filename, 'r') as fi:
         trait_definitions = json.load(fi)
     samples = generate_samples(trait_definitions)
-    sample_with_prompts = list(map(lambda x: {'prompt': ensure_as_is(generate_prompt(base_prompt, x)), 'trait_args': x}, samples))
+    sample_with_prompts = list(map(lambda x: {'prompt': _make_prompt(base_prompt, x), 'trait_args': x}, samples))
     if db_name != "":
         create_collection_if_not_exists(db_name)
         coll = get_collection(db_name)
@@ -35,15 +42,26 @@ def sample(filename, db_name, base_prompt):
 @click.option('-p', '--base-prompt', default=BASE_PROMPT, help='The base prompt.')
 @click.option('-e', '--extra-desc', default="", help='Extra description about the image.')
 @click.option('-n', '--num-last-gen', default=1, help='The number of samples in the last generations. The ancestors will be derived from them.')
+@click.option('-R', '--no-reorg', default=False, help='Disable reorganization of sentences by GPT-4.')
 @click.argument('filename')
-def sample_progressive(filename, db_name, base_prompt, extra_desc, num_last_gen):
-    extra_desc = extra_desc.strip()
+def sample_progressive(filename, db_name, base_prompt, extra_desc, num_last_gen, no_reorg):
+    def _maybe_append_extra(prompt):
+        return f"{prompt} {extra_desc.strip()}" if extra_desc.strip() else prompt
+
+    def _make_prompt(base_prompt, trait_args):
+        prompt = generate_prompt(base_prompt, trait_args)
+        prompt = _maybe_append_extra(prompt)
+        if not no_reorg:
+            prompt = run_reorg(prompt)
+        prompt = ensure_as_is(prompt)
+        return prompt
+
+    
     import json
     with open(filename, 'r') as fi:
         trait_definitions = json.load(fi)
     samples = generate_progressive_samples(trait_definitions, num_last_gen)
-    maybe_append_extra = lambda prompt: f"{prompt} {extra_desc}" if extra_desc else prompt
-    sample_with_prompts = list(map(lambda x: {'prompt': maybe_append_extra(ensure_as_is(generate_prompt(base_prompt, x))), 'trait_args': x}, samples))
+    sample_with_prompts = list(map(lambda x: {'prompt': _make_prompt(base_prompt, x), 'trait_args': x}, samples))
     if db_name != "":
         create_collection_if_not_exists(db_name)
         coll = get_collection(db_name)

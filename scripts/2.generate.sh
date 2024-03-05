@@ -1,0 +1,1 @@
+sdr generate -d $DB_NAME
