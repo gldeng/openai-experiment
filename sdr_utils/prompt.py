@@ -1,4 +1,4 @@
-from constants import BASE_PROMPT
+from .constants import BASE_PROMPT
 
 
 def _concat(items):
