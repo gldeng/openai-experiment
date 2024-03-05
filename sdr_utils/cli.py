@@ -33,14 +33,17 @@ def sample(filename, db_name, base_prompt):
 @click.command()
 @click.option('-d', '--db-name', default="", help='MongoDB name used for this run. If supplied, the sample will be stored in the MongoDB.')
 @click.option('-p', '--base-prompt', default=BASE_PROMPT, help='The base prompt.')
+@click.option('-e', '--extra-desc', default="", help='Extra description about the image.')
 @click.option('-n', '--num-last-gen', default=1, help='The number of samples in the last generations. The ancestors will be derived from them.')
 @click.argument('filename')
-def sample_progressive(filename, db_name, base_prompt, num_last_gen):
+def sample_progressive(filename, db_name, base_prompt, extra_desc, num_last_gen):
+    extra_desc = extra_desc.strip()
     import json
     with open(filename, 'r') as fi:
         trait_definitions = json.load(fi)
     samples = generate_progressive_samples(trait_definitions, num_last_gen)
-    sample_with_prompts = list(map(lambda x: {'prompt': ensure_as_is(generate_prompt(base_prompt, x)), 'trait_args': x}, samples))
+    maybe_append_extra = lambda prompt: f"{prompt} {extra_desc}" if extra_desc else prompt
+    sample_with_prompts = list(map(lambda x: {'prompt': maybe_append_extra(ensure_as_is(generate_prompt(base_prompt, x))), 'trait_args': x}, samples))
     if db_name != "":
         create_collection_if_not_exists(db_name)
         coll = get_collection(db_name)

@@ -19,10 +19,12 @@ After install follow these steps to use it.
     ```
     export OPENAI_API_KEY=<Paste-The-API-Key-Here>
     export DB_NAME=cat_samples_progressive_0305_5
+    export BASE_PROMPT="A simple 128x128 pixel art image of a cartoonish cat with cartoonish head "
+    export EXTRA_DESC="The cat in the image appears to be sitting upright with its front paws placed forward and down, almost between its hind paws. The tail is visible to the side, curving slightly towards the front. Its head is facing forward, giving the impression of looking directly at the viewer."
     ```
 2. Generate a sample
     ```
-    sdr sample-progressive xibo\'s-6-traits.json -d $DB_NAME
+    sdr sample-progressive xibo\'s-6-traits.json -d $DB_NAME -p "$BASE_PROMPT" -e "$EXTRA_DESC"
     ```
 3. Generate images
     ```
