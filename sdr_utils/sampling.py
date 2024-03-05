@@ -32,7 +32,7 @@ def _parent_gen(traits):
     return sample(traits, len(traits)-1)
 
 
-def generate_progressive_samples(trait_definitions: TraitDefinitions, num_of_last_gen_samples=2):
+def generate_progressive_samples(trait_definitions: TraitDefinitions, num_of_last_gen_samples=1):
     samples = []
     num = len(trait_definitions) # sample last generation
     last_gen_samples = []
