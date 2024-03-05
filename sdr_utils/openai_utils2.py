@@ -52,6 +52,9 @@ def create_variation_dalle(name, prompt, no_rewrite=False):
     image_bin = download_image(url)
     return {
         'name': name,
+        'method': 'dalle_only',
+        'original_prompt': prompt,
+        'no_rewrite': no_rewrite,
         'dalle': dalle_result,
         'image': base64.b64encode(image_bin).decode('utf8'),
         'image256': base64.b64encode(reduce_size(image_bin, 4)).decode('utf8'),
@@ -67,6 +70,9 @@ def create_variation(name, desc, no_rewrite=False):
     image_bin = download_image(url)
     return {
         'name': name,
+        'method': 'gpt4+dalle',
+        'original_prompt': desc,
+        'no_rewrite': no_rewrite,
         'craft_prompt': craft_prompt_result,
         'dalle': dalle_result,
         'image': base64.b64encode(image_bin).decode('utf8'),
