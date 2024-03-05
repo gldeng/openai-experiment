@@ -7,8 +7,12 @@ def _concat(items):
     return ', '.join(items)
 
 
+def _strip_all(items):
+    return list(map(lambda x: x.strip(), items))
+
+
 def generate_prompt(base_prompt, trait_args):
-    prompt = base_prompt
+    prompt = base_prompt.strip()
     category_is = []
     category_with = []
     category_pet = []
@@ -23,14 +27,14 @@ def generate_prompt(base_prompt, trait_args):
     only_is = category_is and not category_with
     both = category_is and category_with
     only_with = not category_is and category_with
-    desc_is = 'that is ' + _concat(category_is)
-    desc_with = 'with ' + _concat(category_with)
+    desc_is = 'that is ' + _concat(_strip_all(category_is))
+    desc_with = 'with ' + _concat(_strip_all(category_with))
     if only_is:
-        prompt += desc_is
+        prompt += ' ' + desc_is.strip()
     if only_with:
-        prompt += desc_with
+        prompt += ' ' + desc_with.strip()
     if both:
-        prompt += desc_is + ' and ' + desc_with
+        prompt += f' {desc_is.strip()} and {desc_with.strip()}'
     if category_pet:
         prompt += '. It is accompanied by a ' + ', '.join(category_pet)
     prompt += '.'

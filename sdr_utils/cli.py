@@ -25,7 +25,7 @@ def sample(filename, db_name, base_prompt):
         coll.insert_many(sample_with_prompts)
         print(f"Samples are stored in db {db_name}")
     else:
-        print(json.dumps(sample_with_prompts))
+        print('\n'.join([s['prompt'] for s in sample_with_prompts]))
 
 
 @click.command()
@@ -44,7 +44,7 @@ def sample_progressive(filename, db_name, base_prompt):
         coll.insert_many(sample_with_prompts)
         print(f"Samples are stored in db {db_name}")
     else:
-        print(json.dumps(sample_with_prompts))
+        print('\n'.join([s['prompt'] for s in sample_with_prompts]))
 
 
 @click.command()
