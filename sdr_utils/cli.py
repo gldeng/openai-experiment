@@ -23,6 +23,7 @@ def sample(filename, db_name, base_prompt):
         create_collection_if_not_exists(db_name)
         coll = get_collection(db_name)
         coll.insert_many(sample_with_prompts)
+        print(f"Samples are stored in db {db_name}")
     else:
         print(json.dumps(sample_with_prompts))
 
