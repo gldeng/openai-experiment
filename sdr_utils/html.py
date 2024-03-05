@@ -20,6 +20,11 @@ _keys = [
     'revised_prompt'
 ]
 
+
+def get_docs(coll):
+    return list(sorted(coll.aggregate(pipeline), key=lambda x: len(x['prompt'])))
+
+
 def _prepare_th(doc, key):
     if key in ['image', 'image256']:
         return f"<td><img src='data:image/png;base64,{doc[key]}' width='200px'></td>"
@@ -43,6 +48,7 @@ def prepare_table(docs):
         rows.append(row)
     body = '\n'.join(rows)
     table = f'<table>{header}\n{body}</table>'
+    return table
 
 
 def write_html(filename, html):

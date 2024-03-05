@@ -1,4 +1,5 @@
 import click
+from .html import get_docs, prepare_table, write_html
 from .sampling import generate_progressive_samples, generate_samples
 from .mongo import get_collection, create_collection_if_not_exists
 from .prompt import ensure_as_is, generate_prompt
@@ -59,9 +60,24 @@ def generate(db_name):
         res = run_one_sample(coll, sample_item)
 
 
+@click.command()
+@click.option('-d', '--db-name', help='MongoDB name used for this run. If supplied, the sample will be stored in the MongoDB.')
+@click.option('-o', '--output', default="", help='The output file name (if not supplied, db-name will be used).')
+def html(db_name, output):
+    coll = get_collection(db_name)
+    docs = get_docs(coll)
+    table = prepare_table(docs)
+    if output == "":
+        output = db_name+'.html'
+    write_html(output, table)
+
+
+
 cli.add_command(sample)
 cli.add_command(sample_progressive)
 cli.add_command(generate)
+cli.add_command(html)
+
 
 def main():
     cli()
