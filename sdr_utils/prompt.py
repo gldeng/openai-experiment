@@ -1,4 +1,4 @@
-from .constants import BASE_PROMPT
+from .constants import AS_IS_PREFIX, BASE_PROMPT
 
 
 def _concat(items):
@@ -39,3 +39,10 @@ def generate_prompt(base_prompt, trait_args):
         prompt += '. It is accompanied by a ' + ', '.join(category_pet)
     prompt += '.'
     return prompt
+
+
+def ensure_as_is(prompt):
+    if AS_IS_PREFIX not in prompt:
+        return f'{AS_IS_PREFIX} {prompt}'
+    else:
+        return prompt
