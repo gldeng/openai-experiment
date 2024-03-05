@@ -29,8 +29,8 @@ def sample(filename, db_name, base_prompt):
 
 
 @click.command()
-@click.option('--db-name', default="", help='MongoDB name used for this run. If supplied, the sample will be stored in the MongoDB.')
-@click.option('--base-prompt', default=BASE_PROMPT, help='The base prompt.')
+@click.option('-d', '--db-name', default="", help='MongoDB name used for this run. If supplied, the sample will be stored in the MongoDB.')
+@click.option('-p', '--base-prompt', default=BASE_PROMPT, help='The base prompt.')
 @click.argument('filename')
 def sample_progressive(filename, db_name, base_prompt):
     import json
