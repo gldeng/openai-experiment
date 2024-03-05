@@ -26,3 +26,22 @@ def generate_samples(trait_definitions: TraitDefinitions):
         for _ in range(10):
             samples.append(sample_trait_values(trait_definitions, num))
     return samples
+
+
+def _parent_gen(traits):
+    return sample(traits, len(traits)-1)
+
+
+def generate_progressive_samples(trait_definitions: TraitDefinitions, num_of_last_gen_samples=2):
+    samples = []
+    num = len(trait_definitions) # sample last generation
+    last_gen_samples = []
+    for _ in range(num_of_last_gen_samples):
+        last_gen_samples.append(sample_trait_values(trait_definitions, num))
+    samples.extend(last_gen_samples)
+    cur_samples = last_gen_samples
+    while len(cur_samples[0]) > 1:
+        # need to check parent
+        cur_samples = [_parent_gen(sample) for sample in cur_samples]
+        samples.extend(cur_samples)
+    return list(reversed(samples))
