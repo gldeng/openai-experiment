@@ -24,7 +24,7 @@ def generate_prompt(base_prompt, trait_args):
         elif t['name'].lower() == 'pet':
             category_pet.append('pet ' + value)
         elif t['name'].lower() == 'background':
-            category_breed.append(f'. The background is {value}')
+            category_background.append(f'. The background is {value}')
         else:
             category_with.append(value.replace('wearing', '').replace('is wearing', '').replace('has', ''))
     only_is = category_is and not category_with
