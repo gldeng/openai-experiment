@@ -16,7 +16,6 @@ def generate_prompt(base_prompt, trait_args):
     category_is = []
     category_with = []
     category_pet = []
-    category_breed = []
     category_background = []
     for t in trait_args:
         value = t['value'].lower()
@@ -24,8 +23,6 @@ def generate_prompt(base_prompt, trait_args):
             category_is.append(value.replace('is ', ' '))
         elif t['name'].lower() == 'pet':
             category_pet.append('pet ' + value)
-        elif t['name'].lower() == 'breed':
-            category_breed.append(f'. This is a {value} cat')
         elif t['name'].lower() == 'background':
             category_breed.append(f'. The background is {value}')
         else:
@@ -43,8 +40,6 @@ def generate_prompt(base_prompt, trait_args):
         prompt += f' {desc_is.strip()} and {desc_with.strip()}'
     if category_pet:
         prompt += '. It is accompanied by a ' + ', '.join(category_pet)
-    if category_breed:
-        prompt += ' '.join(category_breed)
     if category_background:
         prompt += ' '.join(category_background)
     prompt += '.'
