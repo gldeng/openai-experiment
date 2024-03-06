@@ -1,8 +1,8 @@
 
-from .constants import DALLE_RESULT_FIELD_NAME
+from .constants import DALLE_RESULT_FIELD_NAME, LEONARDO_RESULT_FIELD_NAME
 
 pipeline = [
-    {'$match': {DALLE_RESULT_FIELD_NAME: {'$ne': None}}},
+    {'$match': {'$or': [{DALLE_RESULT_FIELD_NAME: {'$ne': None}}, {LEONARDO_RESULT_FIELD_NAME: {'$ne': None}}]}},
     {
         '$project': {
             '_id': 0,

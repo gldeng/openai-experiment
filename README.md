@@ -22,15 +22,22 @@ After install follow these steps to use it.
     export EXTRA_DESC="The cat in the image appears to be sitting upright with its front paws placed forward and down, almost between its hind paws. The tail is visible to the side, curving slightly towards the front. Its head is facing forward, giving the impression of looking directly at the viewer."
     export DB_NAME=cat_samples_progressive_0305_5
     ```
-2. Generate a sample
+2. Set environment variables for Leonardo.ai if you are planning to generate images with Leonardo.ai
+    ```
+    export LEONARDO_API_KEY=<Paste-Leonardo.ai-API-Key-Here>
+    ```
+3. Generate a sample
     ```
     sdr sample-progressive xibo\'s-6-traits.json -d $DB_NAME -p "$BASE_PROMPT" -e "$EXTRA_DESC" -R "$NO_REORG"
     ```
-3. Generate images
+4. Generate images
     ```
+    # For Dalle
     sdr generate -d $DB_NAME
+    # For Leonardo.ai
+    sdr generate -d $DB_NAME -u $USE_LEONARDO -a $LEONARDO_API_KEY -i $SOURCE_IMAGE_FILE_PATH
     ```
-4. Generate html
+5. Generate html
     ```
     sdr html -d $DB_NAME
     ```
