@@ -80,13 +80,14 @@ def leonardo(base_image_filename, db_name):
     sample_items = list(coll.find({}))
     leonardo_api_key = os.environ[LEONARDO_API_KEY_NAME]
 
-    prev_doc = ""
+    parent_doc = None
     for sample_item in sample_items:
         print(sample_item['prompt'])
         doc = coll.find_one({'prompt': sample_item['prompt']}, {'_id': 0})
-        res = run_one_leonardo_sample(doc, sample_item, base_image_filename, leonardo_api_key)
+        res = run_one_leonardo_sample(parent_doc, doc, sample_item, base_image_filename, leonardo_api_key)
         coll.update_one({'prompt': doc['prompt']}, {'$set': res})
-        prev_doc = doc
+        doc.update(res)
+        parent_doc = doc
 
 
 @click.command()

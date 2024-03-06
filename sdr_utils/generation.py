@@ -1,6 +1,6 @@
 
 
-from .constants import DALLE_RESULT_FIELD_NAME, LEONARDO_RESULT_FIELD_NAME
+from .constants import DALLE_RESULT_FIELD_NAME, DREAM_SHAPER_MODEL_ID, LEONARDO_RESULT_FIELD_NAME
 from .resizer import reduce_size
 
 
@@ -82,10 +82,10 @@ def run_leonardo(prompt, image_file_path, api_key):
 
     # Generate with an image prompt
     payload = {
-        "height": 1024,
-        "modelId": "ac614f96-1082-45bf-be9d-757f2d31c174", # Dream Shaper
+        "height": 512,
+        "modelId": DREAM_SHAPER_MODEL_ID, # Dream Shaper
         "prompt": prompt,
-        "width": 1024,
+        "width": 512,
         "init_image_id": image_id, # Accepts an array of image IDs
         "seed": 163432960,
         "num_images": 1,
@@ -111,12 +111,69 @@ def run_leonardo(prompt, image_file_path, api_key):
     response = requests.get(get_image_url, headers=headers)
     return response
 
-def run_one_leonardo_sample(doc, sample_item, image_file_path, api_key):
+
+def run_leonardo_next(prompt, base_image_id, api_key):
+    import json
+    import requests
+    import time
+
+    authorization = "Bearer %s" % api_key
+
+    headers = {
+        "accept": "application/json",
+        "content-type": "application/json",
+        "authorization": authorization
+    }
+
+    # Generate with an image prompt
+    url = "https://cloud.leonardo.ai/api/rest/v1/generations"
+
+    payload = {
+        "height": 512,
+        "modelId": DREAM_SHAPER_MODEL_ID,
+        "prompt": prompt,
+        "width": 512,
+        "init_generation_image_id": base_image_id,
+        "init_strength": 0.15,
+        "seed": 163432960,
+        "num_images": 1,
+        "guidance_scale": 7,
+        "public": True,
+        "promptMagic": False,
+        "photoReal": False,
+        "alchemy": False,
+        "presetStyle": "LEONARDO",
+        "negative_prompt": None
+    }
+    response = requests.post(url, json=payload, headers=headers)
+
+    print(f"image generation: {response.status_code}")
+
+    # Wait for the generation to finish
+    time.sleep(15)
+
+    # Get the generation of images
+    generation_id = response.json()['sdGenerationJob']['generationId']
+    get_image_url = "https://cloud.leonardo.ai/api/rest/v1/generations/%s" % generation_id
+    response = requests.get(get_image_url, headers=headers)
+    return response
+
+
+def run_one_leonardo_sample(parent_doc, doc, sample_item, image_file_path, api_key):
     import base64
     if LEONARDO_RESULT_FIELD_NAME in doc:
         print("Existing: " + doc['prompt'])
-        return
-    leonardo_result = run_leonardo(sample_item['prompt'], image_file_path, api_key)
+        return {}
+    leonardo_result = {}
+    if parent_doc is None:
+        prompt = 'Add a ' + doc['trait_args'][0]['value']
+        # prompt = doc['prompt']
+        leonardo_result = run_leonardo(prompt, image_file_path, api_key)
+    else:
+        image_id = parent_doc[LEONARDO_RESULT_FIELD_NAME]['generations_by_pk']['generated_images'][0]['id']
+        parent_traits = set(x['name'] for x in parent_doc['trait_args'])
+        prompt = 'Add a ' + ' and '.join([x['value'] for x in doc['trait_args'] if x['name'] not in parent_traits])
+        leonardo_result = run_leonardo_next(sample_item['prompt'], image_id, api_key)
     url = leonardo_result.json()['generations_by_pk']['generated_images'][0]['url']
     print(url)
     image_bin = download_image(url)
