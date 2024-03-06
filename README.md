@@ -35,7 +35,7 @@ After install follow these steps to use it.
     # For Dalle
     sdr generate -d $DB_NAME
     # For Leonardo.ai
-    sdr generate -d $DB_NAME -u $USE_LEONARDO -a $LEONARDO_API_KEY -i $SOURCE_IMAGE_FILE_PATH
+    sdr leonardo -d $DB_NAME "$SOURCE_IMAGE_FILE_PATH"
     ```
 5. Generate html
     ```

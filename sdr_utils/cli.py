@@ -1,10 +1,11 @@
 import click
+import os
 from .html import get_docs, prepare_table, write_html
 from .sampling import generate_progressive_samples, generate_samples
 from .mongo import get_collection, create_collection_if_not_exists
 from .prompt import ensure_as_is, generate_prompt
 from .generation import run_one_sample, run_one_leonardo_sample
-from .constants import BASE_PROMPT
+from .constants import BASE_PROMPT, LEONARDO_API_KEY_NAME
 from .reorg import run_reorg
 
 
@@ -73,25 +74,29 @@ def sample_progressive(filename, db_name, base_prompt, extra_desc, num_last_gen,
 
 @click.command()
 @click.option('-d', '--db-name', default="", help='MongoDB name used for this run. If supplied, the sample will be stored in the MongoDB.')
-@click.option('-u', '--use-leonardo', default="False", help='Use Leonardo API to generate images.')
-@click.option('-a', '--leonardo-api-key', default="", help='The API key for Leonardo.')
-@click.option('-i', '--image-file-path', default="", help='The path to the image file to be used as input for Leonardo.')
-def generate(db_name, use_leonardo=False, leonardo_api_key="", image_file_path=""):
+@click.argument('base_image_filename')
+def leonardo(base_image_filename, db_name):
     coll = get_collection(db_name)
     sample_items = list(coll.find({}))
+    leonardo_api_key = os.environ[LEONARDO_API_KEY_NAME]
 
-    if use_leonardo == True:
-        prev_doc = ""
-        for sample_item in sample_items:
-            print(sample_item['prompt'])
-            doc = coll.find_one({'prompt': sample_item['prompt']}, {'_id': 0})
-            res = run_one_leonardo_sample(doc, sample_item, image_file_path, leonardo_api_key)
-            coll.update_one({'prompt': doc['prompt']}, {'$set': res})
-            prev_doc = doc
-    else:
-        for sample_item in sample_items:
-            print(sample_item['prompt'])
-            res = run_one_sample(coll, sample_item)
+    prev_doc = ""
+    for sample_item in sample_items:
+        print(sample_item['prompt'])
+        doc = coll.find_one({'prompt': sample_item['prompt']}, {'_id': 0})
+        res = run_one_leonardo_sample(doc, sample_item, base_image_filename, leonardo_api_key)
+        coll.update_one({'prompt': doc['prompt']}, {'$set': res})
+        prev_doc = doc
+
+
+@click.command()
+@click.option('-d', '--db-name', default="", help='MongoDB name used for this run. If supplied, the sample will be stored in the MongoDB.')
+def generate(db_name):
+    coll = get_collection(db_name)
+    sample_items = list(coll.find({}))
+    for sample_item in sample_items:
+        print(sample_item['prompt'])
+        res = run_one_sample(coll, sample_item)
 
 
 @click.command()
@@ -110,6 +115,7 @@ def html(db_name, output):
 cli.add_command(sample)
 cli.add_command(sample_progressive)
 cli.add_command(generate)
+cli.add_command(leonardo)
 cli.add_command(html)
 
 

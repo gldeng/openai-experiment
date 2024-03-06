@@ -1,0 +1,1 @@
+sdr leonardo -d $DB_NAME $SOURCE_IMAGE_FILE_PATH
