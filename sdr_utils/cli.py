@@ -80,7 +80,7 @@ def generate(db_name, use_leonardo=False, leonardo_api_key="", image_file_path="
     coll = get_collection(db_name)
     sample_items = list(coll.find({}))
 
-    if use_leonardo:
+    if use_leonardo == True:
         prev_doc = ""
         for sample_item in sample_items:
             print(sample_item['prompt'])
