@@ -6,7 +6,7 @@ from .mongo import get_collection, create_collection_if_not_exists
 from .prompt import ensure_as_is, generate_prompt
 from .generation import run_one_sample, run_one_leonardo_sample
 from .constants import BASE_PROMPT, LEONARDO_API_KEY_NAME
-from .reorg import run_reorg
+from .reorg import reorg_prompt, run_reorg
 
 
 @click.group()
@@ -112,12 +112,24 @@ def html(db_name, output):
     write_html(output, table)
 
 
+@click.command()
+@click.option('-d', '--db-name', default="", help='MongoDB name used for this run. If supplied, the sample will be stored in the MongoDB.')
+def reorg(db_name):
+    coll = get_collection(db_name)
+    sample_items = list(coll.find({'reorg': {'$eq': None}}))
+    for sample_item in sample_items:
+        print(sample_item['prompt'])
+        res = reorg_prompt(coll, sample_item)
+
 
 cli.add_command(sample)
 cli.add_command(sample_progressive)
 cli.add_command(generate)
 cli.add_command(leonardo)
 cli.add_command(html)
+
+
+cli.add_command(reorg)
 
 
 def main():

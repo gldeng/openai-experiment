@@ -1,0 +1,1 @@
+sdr reorg -d $DB_NAME
