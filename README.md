@@ -12,6 +12,8 @@
     pip install -e .
     ```
 
+3. If you have [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed, you can use `docker-compose up -d` to start a MongoDB.
+
 ## Usage
 After install follow these steps to use it.
 
