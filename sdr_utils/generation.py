@@ -102,14 +102,18 @@ def run_leonardo(prompt, image_file_path, api_key):
     response = requests.post(generation_url, json=payload, headers=headers)
     print(f"image generation: {response.status_code}")
 
-    # Wait for the generation to finish
-    time.sleep(15)
-
-    # Get the generation of images
     generation_id = response.json()['sdGenerationJob']['generationId']
     get_image_url = "https://cloud.leonardo.ai/api/rest/v1/generations/%s" % generation_id
-    response = requests.get(get_image_url, headers=headers)
-    return response
+    time.sleep(6)
+
+    # Wait for the generation to finish
+    ret = {}
+    while not ret or not ret.json() or not ret.json().get('generations_by_pk') or not ret.json().get('generations_by_pk').get('generated_images'):
+        time.sleep(2)
+        # Get the generation of images
+        ret = requests.get(get_image_url, headers=headers)
+
+    return ret
 
 
 def run_leonardo_next(prompt, base_image_id, api_key):
@@ -149,14 +153,18 @@ def run_leonardo_next(prompt, base_image_id, api_key):
 
     print(f"image generation: {response.status_code}")
 
-    # Wait for the generation to finish
-    time.sleep(15)
-
-    # Get the generation of images
     generation_id = response.json()['sdGenerationJob']['generationId']
     get_image_url = "https://cloud.leonardo.ai/api/rest/v1/generations/%s" % generation_id
-    response = requests.get(get_image_url, headers=headers)
-    return response
+    time.sleep(6)
+
+    # Wait for the generation to finish
+    ret = {}
+    while not ret or not ret.json() or not ret.json().get('generations_by_pk') or not ret.json().get('generations_by_pk').get('generated_images'):
+        time.sleep(2)
+        # Get the generation of images
+        ret = requests.get(get_image_url, headers=headers)
+
+    return ret
 
 
 def run_one_leonardo_sample(parent_doc, doc, sample_item, image_file_path, api_key):
