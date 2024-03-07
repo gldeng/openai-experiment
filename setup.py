@@ -7,6 +7,9 @@ setup(
     name='sdr_utils',
     version='0.1',
     packages=find_packages(),
+    package_data={
+        'sdr_utils': ['resource/*'],
+    },
     entry_points={
         'console_scripts': [
             'sdr=sdr_utils.cli:main',  # Adjust the path according to your directory and file names

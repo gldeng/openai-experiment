@@ -3,3 +3,4 @@ numpy>=1.26.4
 openai>=1.13.3
 Pillow>=9.4.0
 Requests>=2.31.0
+PyExecJS>=1.5.1
