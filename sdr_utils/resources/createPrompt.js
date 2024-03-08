@@ -136,7 +136,7 @@ function createPrompt(config, trait_args) {
     }
     var groupPet = _formatGroup(groups, 'pet');
     if (groupPet != '') {
-        prompt = prompt + ' It is accompanied by a ' + groupPet + '.'
+        prompt = prompt + ' It is accompanied by a pet ' + groupPet + '.'
     }
     var groupBackground = _formatGroup(groups, 'background')
     if (groupBackground != '') {
