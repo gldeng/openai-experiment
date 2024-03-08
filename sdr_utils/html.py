@@ -15,8 +15,8 @@ pipeline = [
 ]
 
 _keys = [
-    'prompt',
     'image256',
+    'prompt',
     'revised_prompt'
 ]
 
