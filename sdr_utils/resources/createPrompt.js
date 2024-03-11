@@ -1,8 +1,8 @@
-function _extractBreedGroup(name, value) {
-    var isBreedGroup = name.toLowerCase().trim() == 'breed';
+function _extractBreedGroup(traitType, value) {
+    var isBreedGroup = traitType.toLowerCase().trim() == 'breed';
     if (isBreedGroup) {
         return {
-            name: name,
+            traitType: traitType,
             value: value,
             group: 'breed',
             extracted: value.trim()
@@ -12,11 +12,11 @@ function _extractBreedGroup(name, value) {
     }
 }
 
-function _extractPetGroup(name, value) {
-    var isPetGroup = name.toLowerCase().trim() == 'pet';
+function _extractPetGroup(traitType, value) {
+    var isPetGroup = traitType.toLowerCase().trim() == 'pet';
     if (isPetGroup) {
         return {
-            name: name,
+            traitType: traitType,
             value: value,
             group: 'pet',
             extracted: value.trim()
@@ -26,11 +26,11 @@ function _extractPetGroup(name, value) {
     }
 }
 
-function _extractBackgroundGroup(name, value) {
-    var isBackgroundGroup = name.toLowerCase().trim() == 'background';
+function _extractBackgroundGroup(traitType, value) {
+    var isBackgroundGroup = traitType.toLowerCase().trim() == 'background';
     if (isBackgroundGroup) {
         return {
-            name: name,
+            traitType: traitType,
             value: value,
             group: 'background',
             extracted: value.trim()
@@ -40,13 +40,13 @@ function _extractBackgroundGroup(name, value) {
     }
 }
 
-function _extractIsGroup(name, value) {
+function _extractIsGroup(traitType, value) {
     // to cater to 'is white-eyed'
     var tokens = value.trim().split(' ');
     var matching_the_target_pattern = tokens.length == 2 && tokens[0] == 'is';
     if (matching_the_target_pattern) {
         return {
-            name: name,
+            traitType: traitType,
             value: value,
             group: 'is',
             extracted: tokens[tokens.length - 1].trim()
@@ -56,10 +56,10 @@ function _extractIsGroup(name, value) {
     }
 }
 
-function _extractWithGroup(name, value) {
+function _extractWithGroup(traitType, value) {
     // this is the default group
     return {
-        name: name,
+        traitType: traitType,
         value: value,
         group: 'with',
         extracted: value.trim().replace('wears', '')
@@ -78,7 +78,7 @@ function _extract(trait_arg) {
         _extractBreedGroup, _extractBackgroundGroup, _extractPetGroup, _extractIsGroup, _extractWithGroup
     ];
     for (let i = 0; i < handlers.length; i++) {
-        var obj = handlers[i](trait_arg.name, trait_arg.value);
+        var obj = handlers[i](trait_arg.traitType, trait_arg.value);
         if (obj != null) {
             return obj;
         }
@@ -142,6 +142,8 @@ function createPrompt(config, trait_args) {
     if (groupBackground != '') {
         prompt = prompt + ' The image has a ' + groupBackground + ' background.'
 
+    } else {
+        ' The image has a solid background.'
     }
     return prompt;
 }
