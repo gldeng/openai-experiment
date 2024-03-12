@@ -34,6 +34,7 @@ After install follow these steps to use it.
     export SAMPLE_SIZE=100
     export TRAIT_DIR=traits
     ```
+    **Notes: Please modify the API key and DB_NAME**
 2. Generate a set of samples
     ```
     sdr sample $TRAIT_DIR -d $DB_NAME -p "$BASE_PROMPT" -n $SAMPLE_SIZE
