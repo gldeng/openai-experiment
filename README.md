@@ -4,6 +4,15 @@
 
 1. Install MongoDB and Anaconda
 
+   a. Follow [this page](https://www.mongodb.com/docs/manual/installation/) to install MongoDB and [MongoDB Compass](https://www.mongodb.com/try/download/compass) (Optional if you want to check the data).
+
+   b. Follow [this page](https://docs.anaconda.com/free/anaconda/install/index.html) to install Anaconda so that you have a proper Python environment.
+
+1. Clone this repo
+   ```
+   git clone https://github.com/gldeng/openai-experiment.git
+   ```
+
 1. **Navigate to the Project Directory**: Use the command line to navigate into the cloned project directory. For example:
     ```
     cd openai-experiment
