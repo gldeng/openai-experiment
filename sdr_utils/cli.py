@@ -7,6 +7,7 @@ from .prompt import ensure_as_is, generate_prompt
 from .generation import run_one_sample, run_one_leonardo_sample
 from .constants import BASE_PROMPT, LEONARDO_API_KEY_NAME
 from .reorg import reorg_prompt, run_reorg
+from .sample_new_traits import Sampler
 
 
 @click.group()
@@ -14,21 +15,15 @@ def cli():
     pass
 
 @click.command()
-@click.option('--db-name', default="", help='MongoDB name used for this run. If supplied, the sample will be stored in the MongoDB.')
-@click.option('--base-prompt', default=BASE_PROMPT, help='The base prompt.')
-@click.argument('filename')
-def sample(filename, db_name, base_prompt):
-    def _make_prompt(base_prompt, trait_args):
-        prompt = generate_prompt(base_prompt, trait_args)
-        prompt = run_reorg(prompt)
-        prompt = ensure_as_is(prompt)
-        return prompt
+@click.option('-d', '--db-name', default="", help='MongoDB name used for this run. If supplied, the sample will be stored in the MongoDB.')
+@click.option('-p', '--base-prompt', default=BASE_PROMPT, help='The base prompt.')
+@click.option('-n', '--sample-size', default=100, help='The number of samples to create. Default to 100.')
+@click.argument('traits_dir')
+def sample(traits_dir, db_name, base_prompt, sample_size):
 
-    import json
-    with open(filename, 'r') as fi:
-        trait_definitions = json.load(fi)
-    samples = generate_samples(trait_definitions)
-    sample_with_prompts = list(map(lambda x: {'prompt': _make_prompt(base_prompt, x), 'trait_args': x}, samples))
+    sampler = Sampler(traits_dir)
+    samples = sampler.sample(sample_size)
+    sample_with_prompts = list(map(lambda x: {'prompt': generate_prompt(base_prompt, x), 'trait_args': x}, samples))
     if db_name != "":
         create_collection_if_not_exists(db_name)
         coll = get_collection(db_name)

@@ -1,6 +1,8 @@
 # Result files
 *.html
 *.json
+!traits/*.json
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
