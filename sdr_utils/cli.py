@@ -18,19 +18,35 @@ def cli():
 @click.option('-d', '--db-name', default="", help='MongoDB name used for this run. If supplied, the sample will be stored in the MongoDB.')
 @click.option('-p', '--base-prompt', default=BASE_PROMPT, help='The base prompt.')
 @click.option('-n', '--sample-size', default=100, help='The number of samples to create. Default to 100.')
+@click.option('-r', '--reorg', default=False, help='With reorg.')
 @click.argument('traits_dir')
-def sample(traits_dir, db_name, base_prompt, sample_size):
+def sample(traits_dir, db_name, base_prompt, sample_size, reorg):
+    def _prepare_doc(trait_args):
+        p = generate_prompt(base_prompt, trait_args)
+        if not reorg:
+            return {'prompt': p, 'trait_args': trait_args}
+        prefix = ''
+        prompt = p
+        if ':' in p:
+            prefix, prompt = p.split(':')
+        if reorg:
+            new_prompt = run_reorg(prompt)
+            if prefix:
+                new_prompt = ': '.join([prefix, new_prompt])
+        return {'prompt': new_prompt, 'original_prompt': p, 'trait_args': trait_args}
 
-    sampler = Sampler(traits_dir)
-    samples = sampler.sample(sample_size)
-    sample_with_prompts = list(map(lambda x: {'prompt': generate_prompt(base_prompt, x), 'trait_args': x}, samples))
+    coll = None
     if db_name != "":
         create_collection_if_not_exists(db_name)
         coll = get_collection(db_name)
-        coll.insert_many(sample_with_prompts)
-        print(f"Samples are stored in db {db_name}")
-    else:
-        print('\n'.join([s['prompt'] for s in sample_with_prompts]))
+    sampler = Sampler(traits_dir)
+    samples = sampler.sample(sample_size)
+    for s in samples:
+        doc = _prepare_doc(s)
+        if coll != "":
+            coll.insert_one(doc)
+        else:
+            print(doc['prompt'])
 
 
 @click.command()
