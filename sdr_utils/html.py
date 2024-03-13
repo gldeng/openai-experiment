@@ -2,7 +2,7 @@
 from .constants import DALLE_RESULT_FIELD_NAME, LEONARDO_RESULT_FIELD_NAME
 
 pipeline = [
-    {'$match': {'$or': [{DALLE_RESULT_FIELD_NAME: {'$ne': None}}, {LEONARDO_RESULT_FIELD_NAME: {'$ne': None}}]}},
+    # {'$match': {'$or': [{DALLE_RESULT_FIELD_NAME: {'$ne': None}}, {LEONARDO_RESULT_FIELD_NAME: {'$ne': None}}]}},
     {
         '$project': {
             '_id': 0,
@@ -36,9 +36,10 @@ def get_docs(coll):
 
 def _prepare_th(doc, key):
     if key in ['image', 'image256']:
-        return f"<td><img src='data:image/png;base64,{doc[key]}' width='200px'></td>"
+        return f"<td><img src='data:image/png;base64,{doc.get(key, '')}' width='200px'></td>"
     
-    value = doc[key].replace('\n', '<br/>')
+    value = doc.get(key, '')
+    value = '' if not value else value.replace('\n', '<br/>')
     return f'<td>{value}</td>'
 
 def _prepare_header():
