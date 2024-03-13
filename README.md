@@ -37,8 +37,9 @@ After install follow these steps to use it.
     **Notes: Please modify the API key and DB_NAME**
 2. Generate a set of samples
     ```
-    sdr sample $TRAIT_DIR -d $DB_NAME -p "$BASE_PROMPT" -n $SAMPLE_SIZE
+    sdr sample $TRAIT_DIR -d $DB_NAME -p "$BASE_PROMPT" -n $SAMPLE_SIZE -r true
     ```
+    **Notes: Remove `-r true` option if reorg of prompt is not required. Reorg means using GPT-4 to reorganize our prompt sentences.**
 4. Generate images
     ```
     sdr generate -d $DB_NAME
