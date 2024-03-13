@@ -48,3 +48,9 @@ After install follow these steps to use it.
     ```
     sdr html -d $DB_NAME
     ```
+
+If scripts are changed, you need to uninstall the package first and reinstall it.
+```
+pip uninstall sdr-utils
+pip install -e .
+```
