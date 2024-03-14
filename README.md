@@ -30,7 +30,7 @@ After install follow these steps to use it.
     ```
     export OPENAI_API_KEY=<Paste-The-API-Key-Here>
     export BASE_PROMPT="I NEED to test how the tool works with extremely simple prompts. DO NOT add any detail, just use it AS-IS: A pixel art image of a cat standing like a human with both feet visible on the ground, facing directly at the viewer,"
-    export DB_NAME=cat_samples_0314_0001
+    export DB_NAME=cat_samples_0314_0003
     export SAMPLE_SIZE=40
     export TRAIT_DIR=traitsV4
     ```

@@ -300,31 +300,31 @@ function createPrompt(config, trait_args) {
     }
 
     if (groupHas) {
-        prompt = prompt + ' The cat has '+ groupHas + '.'
+        prompt = prompt + ' The main character has '+ groupHas + '.'
     }
 
     if (groupWearing) {
-        prompt = prompt + ' The cat is wearing '+ groupWearing + '.'
+        prompt = prompt + ' The main character is wearing '+ groupWearing + '.'
     }
 
     if (groupWeaponLeft) {
-        prompt = prompt + ' The cat is holding ' + groupWeaponLeft + ' in the left hand.'
+        prompt = prompt + ' The main character is holding ' + groupWeaponLeft + ' in the left hand.'
     }
 
     if (groupWeaponRight) {
-        prompt = prompt + ' The cat is holding ' + groupWeaponRight + ' in the right hand.'
+        prompt = prompt + ' The main character is holding ' + groupWeaponRight + ' in the right hand.'
     }
 
     if (groupAccessoryLeft) {
-        prompt = prompt + ' The cat is wearing ' + groupAccessoryRight + ' on the left hand.'
+        prompt = prompt + ' The main character is wearing ' + groupAccessoryRight + ' on the left hand.'
     }
 
     if (groupAccessoryRight) {
-        prompt = prompt + ' The cat is wearing ' + groupAccessoryRight + ' on the right hand.'
+        prompt = prompt + ' The main character is wearing ' + groupAccessoryRight + ' on the right hand.'
     }
 
     if (groupRide) {
-        prompt = prompt + ' The cat is riding ' + groupRide + '.'
+        prompt = prompt + ' The main character is riding ' + groupRide + '.'
     }
 
     var groupPet = _formatGroup(groups, 'pet');
@@ -336,7 +336,7 @@ function createPrompt(config, trait_args) {
         prompt = prompt + ' ' + groupZodiac;
     }
     if(groupQuantumState) {
-        prompt = prompt + ' The cat has ' + groupQuantumState + '.';
+        prompt = prompt + ' The main character has ' + groupQuantumState + '.';
     }
     var groupBackground = _formatGroup(groups, 'background')
     if (groupBackground != '') {
@@ -345,6 +345,8 @@ function createPrompt(config, trait_args) {
     } else {
         ' The image has a solid background.'
     }
+    prompt = prompt + ' The image should contain the full-body shot of the main character.'
+    prompt = prompt + ' The image should contain one and only one cat.'
     prompt = prompt + ' The generated image should not contain any text or labels.'
     return prompt;
 }

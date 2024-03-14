@@ -1,7 +1,7 @@
 # Result files
 *.html
 *.json
-!traits/*.json
+!traits*/*.json
 
 
 # Byte-compiled / optimized / DLL files
