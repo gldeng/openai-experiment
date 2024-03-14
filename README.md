@@ -29,8 +29,8 @@ After install follow these steps to use it.
 1. Set an environment variable for the db name and one for OPENAI
     ```
     export OPENAI_API_KEY=<Paste-The-API-Key-Here>
-    export BASE_PROMPT="I NEED to test how the tool works with extremely simple prompts. DO NOT add any detail, just use it AS-IS: A medium resolution pixel art image of a cat standing like a human, facing directly at the viewer,"
-    export DB_NAME=cat_samples_0313_0001
+    export BASE_PROMPT="I NEED to test how the tool works with extremely simple prompts. DO NOT add any detail, just use it AS-IS: A medium resolution pixel art image of a cat standing like a human with both feet visible on the ground, facing directly at the viewer,"
+    export DB_NAME=cat_samples_0313_0004
     export SAMPLE_SIZE=100
     export TRAIT_DIR=traits
     ```

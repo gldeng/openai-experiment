@@ -345,5 +345,6 @@ function createPrompt(config, trait_args) {
     } else {
         ' The image has a solid background.'
     }
+    prompt = prompt + ' The generated image should not contain any text or labels.'
     return prompt;
 }

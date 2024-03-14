@@ -8,6 +8,7 @@ from .generation import run_one_sample, run_one_leonardo_sample
 from .constants import BASE_PROMPT, LEONARDO_API_KEY_NAME
 from .reorg import reorg_prompt, run_reorg
 from .sample_new_traits import Sampler
+from .quality_check import detect_bad
 
 
 @click.group()
@@ -112,6 +113,21 @@ def generate(db_name):
 
 
 @click.command()
+@click.option('-d', '--db-name', default="", help='MongoDB name used for this run. If supplied, the sample will be stored in the MongoDB.')
+def check(db_name):
+    coll = get_collection(db_name)
+    sample_items = list(coll.find({'image256': {'$ne': None}}))
+    for sample_item in sample_items:
+        print(sample_item['prompt'])
+        res = detect_bad(sample_item['image256'])
+        quality_bad = 'true' in res['choices'][0]['message']['content']
+        coll.update_one(
+            {'prompt': sample_item['prompt']},
+            {'$set':{'quality_check': res, 'quality_bad': quality_bad}}
+        )
+
+
+@click.command()
 @click.option('-d', '--db-name', help='MongoDB name used for this run. If supplied, the sample will be stored in the MongoDB.')
 @click.option('-o', '--output', default="", help='The output file name (if not supplied, db-name will be used).')
 def html(db_name, output):
@@ -137,6 +153,7 @@ cli.add_command(sample)
 cli.add_command(sample_progressive)
 cli.add_command(generate)
 cli.add_command(leonardo)
+cli.add_command(check)
 cli.add_command(html)
 
 

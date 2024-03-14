@@ -9,7 +9,7 @@ def run_reorg(prompt):
         {
           "role": "user",
           "content": [
-            {"type": "text", "text": "Reorganize the sentences: " + prompt},
+            {"type": "text", "text": "Re-write the sentences but don't add more details: " + prompt},
           ],
         }
       ],

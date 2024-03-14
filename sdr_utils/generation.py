@@ -18,15 +18,21 @@ def convert_to_webp(image_bin):
             return img_bytes.getvalue()
 
 def run_dalle(prompt):
-    from openai import OpenAI
+    from openai import OpenAI, BadRequestError
     client = OpenAI()
-    response = client.images.generate(
-      model="dall-e-3",
-      prompt=prompt,
-      size="1024x1024",
-      quality="standard",
-      n=1,
-    )
+    try: 
+        response = client.images.generate(
+        model="dall-e-3",
+        prompt=prompt,
+        size="1024x1024",
+        quality="standard",
+        n=1,
+        )
+    except BadRequestError as e:
+        if e.code == 'content_policy_violation':
+            return {}
+        else:
+            raise e
 
     return response.dict()
 
@@ -37,6 +43,8 @@ def run_one_sample(coll, sample_item):
         print("Existing: " + doc['prompt'])
         return
     dalle_result = run_dalle(sample_item['prompt'])
+    if not dalle_result:
+        return
     url = dalle_result['data'][0]['url']
     print(url)
     image_bin = download_image(url)

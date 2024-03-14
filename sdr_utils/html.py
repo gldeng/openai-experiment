@@ -11,7 +11,9 @@ pipeline = [
             'original_prompt': 1,
             'trait_args': 1,
             'image': 1,
-            'image256': 1
+            'image256': 1,
+            'quality_bad': 1,
+            'quality_check': { '$arrayElemAt': [f'$quality_check.choices.message.content', 0] },
         }
     }
 ]
@@ -21,7 +23,9 @@ _keys = [
     'prompt',
     'revised_prompt',
     'original_prompt',
-    'traits'
+    'traits',
+    'quality_bad',
+    'quality_check'
 ]
 
 
@@ -38,7 +42,7 @@ def _prepare_th(doc, key):
     if key in ['image', 'image256']:
         return f"<td><img src='data:image/png;base64,{doc.get(key, '')}' width='200px'></td>"
     
-    value = doc.get(key, '')
+    value = str(doc.get(key, ''))
     value = '' if not value else value.replace('\n', '<br/>')
     return f'<td>{value}</td>'
 
