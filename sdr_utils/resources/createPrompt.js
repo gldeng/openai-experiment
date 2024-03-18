@@ -14,7 +14,7 @@ var quantumStateMapping = {
 }
 
 function _extractQuantumStateGroup(traitType, value) {
-    var isThisGroup = ['quantumstate'].includes(traitType.toLowerCase().trim());
+    var isThisGroup = ['quantumstate', 'quantum state'].includes(traitType.toLowerCase().trim());
     if (!isThisGroup) {
         return null
     }
@@ -97,8 +97,8 @@ function _extractWithGroup(traitType, value) {
         extracted: value.trim().replace('wears', '')
             .replace('wearing', '')
             .replace('is wearing', '')
-            .replace('has', '').
-            replace('Wears', '')
+            .replace('has', '')
+            .replace('Wears', '')
             .replace('Wearing', '')
             .replace('Is Wearing', '')
             .replace('Has', '')
@@ -106,7 +106,7 @@ function _extractWithGroup(traitType, value) {
 }
 
 function _extractHasGroup(traitType, value) {
-    var isThisGroup = ['eyes', 'face', 'mouth', 'mustache', 'mustaches', 'paws', 'tails', 'tail', 'wings'].includes(traitType.toLowerCase().trim());
+    var isThisGroup = ['eyes', 'face', 'mouth', 'mustache', 'mustaches', 'paws', 'paw', 'tails', 'tail', 'wings'].includes(traitType.toLowerCase().trim());
     if (!isThisGroup) {
         return null
     }
@@ -143,7 +143,8 @@ function _extractWearingGroup(traitType, value) {
 
 
 function _extractWeaponLeftGroup(traitType, value) {
-    var isThisGroup = ['weaponleft'].includes(traitType.toLowerCase().trim());
+    // weapon means left hand by default
+    var isThisGroup = ['weaponleft', 'weapon'].includes(traitType.toLowerCase().trim());
     if (!isThisGroup) {
         return null
     }
@@ -185,7 +186,8 @@ function _extractAccessoryLeftGroup(traitType, value) {
 
 
 function _extractAccessoryRightGroup(traitType, value) {
-    var isThisGroup = ['accessoryright'].includes(traitType.toLowerCase().trim());
+    // accessory means right hand by default
+    var isThisGroup = ['accessoryright', 'accessory'].includes(traitType.toLowerCase().trim());
     if (!isThisGroup) {
         return null
     }
@@ -329,7 +331,7 @@ function createPrompt(config, trait_args) {
 
     var groupPet = _formatGroup(groups, 'pet');
     if (groupPet != '') {
-        prompt = prompt + ' It is accompanied by a pet ' + groupPet + '.'
+        prompt = prompt + ' The main character is accompanied by a pet ' + groupPet + '.'
     }
 
     if(groupZodiac) {
